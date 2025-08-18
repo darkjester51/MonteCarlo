@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monte Carlo Cash-Flow Risk Simulator</title>
+  <meta name="description" content="Interactive Monte Carlo simulator for SMB cash risk with fan charts, histogram and tornado analysis. Client-side only." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
+  <script src="scripts/app.js?v=1" defer></script>
+</head>
+<body>
+  <header class="container">
+    <div class="hero">
+      <h1>Monte Carlo Cash-Flow Risk Simulator</h1>
+      <p class="sub">Fast, client-side simulator with uncertainty bands, shortfall probability, VaR and sensitivity.</p>
+    </div>
+  </header>
+
+  <main class="container grid">
+    <!-- Controls -->
+    <section class="card">
+      <h2>Inputs</h2>
+      <div class="controls">
+        <div class="row three">
+          <label>Months
+            <input id="periods" type="number" min="3" max="60" step="1" value="12">
+          </label>
+          <label>Simulations
+            <input id="sims" type="number" min="1000" max="100000" step="1000" value="10000">
+          </label>
+          <label>Seed (optional)
+            <input id="seed" type="number" placeholder="e.g. 42">
+          </label>
+        </div>
+
+        <h3>Demand & Revenue</h3>
+        <div class="row three">
+          <label>Demand distribution
+            <select id="demandDist">
+              <option value="normal" selected>Normal (truncated ≥ 0)</option>
+              <option value="lognormal">Lognormal</option>
+              <option value="poisson">Poisson</option>
+            </select>
+          </label>
+          <label>Demand mean / λ
+            <input id="demandMu" type="number" step="1" value="500">
+          </label>
+          <label>Demand std (ignored for Poisson)
+            <input id="demandSigma" type="number" step="1" value="120">
+          </label>
+        </div>
+        <div class="row three">
+          <label>Average order value ($)
+            <input id="aov" type="number" step="1" value="40">
+          </label>
+          <label>COGS (% of revenue)
+            <input id="cogsPct" type="number" min="0" max="100" step="1" value="45">
+          </label>
+          <label>Variable Opex (% of revenue)
+            <input id="varCostPct" type="number" min="0" max="100" step="1" value="8">
+          </label>
+        </div>
+
+        <h3>Cash Timing & Expenses</h3>
+        <div class="row three">
+          <label>Starting cash ($)
+            <input id="startingCash" type="number" step="100" value="50000">
+          </label>
+          <label>Fixed monthly cost ($)
+            <input id="fixedCost" type="number" step="100" value="18000">
+          </label>
+          <label>DSO (days sales outstanding)
+            <input id="dsoDays" type="number" min="0" max="120" step="1" value="30">
+          </label>
+        </div>
+        <div class="row three">
+          <label>Late pay share (% shifted +1 mo)
+            <input id="latePayPct" type="number" min="0" max="100" step="1" value="10">
+          </label>
+          <label>Tax rate (% on positive PBT)
+            <input id="taxRate" type="number" min="0" max="60" step="1" value="0">
+          </label>
+          <label>Shortfall threshold ($)
+            <input id="shortfallThresh" type="number" step="100" value="0">
+          </label>
+        </div>
+
+        <div class="row">
+          <button id="runBtn" class="btn">Run Simulation</button>
+          <span id="status" class="muted" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <details class="mt">
+        <summary>Model notes (transparent by design)</summary>
+<pre>
+Revenue_t = Demand_t × AOV
+COGS_t = COGS% × Revenue_t
+VarOpex_t = VarCost% × Revenue_t
+Fixed_t = Fixed monthly cost
+PBT_t = Revenue_t − (COGS_t + VarOpex_t + Fixed_t)
+Tax_t = Tax% × max(PBT_t, 0)
+
+Cash in: Revenue shifted by DSO months; a LatePay% is delayed by +1 month.
+Cash out: costs occur in month t.
+
+Cash_t = Cash_{t−1} + CashIn_t − (COGS_t + VarOpex_t + Fixed_t − Tax_t)
+</pre>
+      </details>
+    </section>
+
+    <!-- Charts & Stats -->
+    <section class="card">
+      <h2>Results</h2>
+      <div class="kpis">
+        <div class="kpi"><div class="k">P(Shortfall)</div><div class="v" id="kpiShortfall">—</div></div>
+        <div class="kpi"><div class="k">P(End&nbsp;Cash&nbsp;<&nbsp;0)</div><div class="v" id="kpiEndNeg">—</div></div>
+        <div class="kpi"><div class="k">VaR₅% (End Cash)</div><div class="v" id="kpiVaR">—</div></div>
+        <div class="kpi"><div class="k">Median End Cash</div><div class="v" id="kpiMedian">—</div></div>
+      </div>
+
+      <div id="fanChart" class="plot"></div>
+      <div id="histChart" class="plot"></div>
+
+      <h3 class="mt">Sensitivity — Tornado (ΔP(Shortfall))</h3>
+      <div id="tornadoChart" class="plot short"></div>
+    </section>
+  </main>
+
+  <footer class="container muted small">
+    <p>© <span id="year"></span> Monte Carlo Cash-Flow Risk — Static, fast, auditable</p>
+  </footer>
+</body>
+</html>
