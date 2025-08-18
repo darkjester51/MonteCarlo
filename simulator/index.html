@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zetacron Risk Simulator — Free Monte Carlo Cash-Flow Tool</title>
+  <meta name="description" content="Free, client-side Monte Carlo cash-flow simulator for startups and SMBs. Transparent, auditable, and fast." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">Zetacron Solutions</a>
+      <nav class="nav">
+        <a href="/invoicer">Invoicer</a>
+        <a class="active" href="/simulator">Simulator</a>
+        <a href="/#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero card">
+      <div class="hero-text">
+        <h1>Monte Carlo Cash-Flow Risk Simulator</h1>
+        <p>Free, 100% client-side. Model uncertainty, visualize cash shortfall risk, and export results — all in your browser.</p>
+        <div class="cta-row">
+          <a class="btn primary" href="/invoicer?utm_source=simulator&utm_medium=cta&utm_campaign=crosspromo">Try ZCS Invoicer ($4.99/mo)</a>
+          <a class="btn ghost" href="#live">Jump to Live Simulator</a>
+        </div>
+        <ul class="bullets">
+          <li>Uncertainty bands, VaR, shortfall probability</li>
+          <li>Demand distributions (normal, lognormal, Poisson)</li>
+          <li>Transparent formulas — auditable by design</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature card">
+        <h3>Why free?</h3>
+        <p>We believe modeling tools should be transparent. This demo showcases our approach; if you need secure invoicing, try ZCS Invoicer.</p>
+      </div>
+      <div class="feature card">
+        <h3>Privacy by default</h3>
+        <p>Runs locally in your browser. No data leaves your device. No logins, no tracking.</p>
+      </div>
+      <div class="feature card">
+        <h3>Future “Pro” path</h3>
+        <p>Save/share scenarios, multi-year runs, financing levers, PDF/CSV exports — coming to a Pro tier later (kept separate from Invoicer).</p>
+      </div>
+    </section>
+
+    <section id="live" class="card">
+      <h2>Live Simulator</h2>
+      <!-- Embed the simulator app (kept on the same route for isolation) -->
+      <iframe id="simFrame" src="app.html" title="Zetacron Risk Simulator" loading="lazy"></iframe>
+    </section>
+
+    <section class="faq card">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Does this affect my Invoicer subscription or Stripe checkout?</summary>
+        <p>No. The simulator lives on <code>/simulator</code> with its own scripts. We do not load Stripe or share auth here.</p>
+      </details>
+      <details>
+        <summary>Is my data sent anywhere?</summary>
+        <p>No — everything runs in your browser. Refresh clears inputs.</p>
+      </details>
+      <details>
+        <summary>Who uses Monte Carlo cash-flow sims?</summary>
+        <p>CFOs, FP&amp;A analysts, investors, and consultants for runway and liquidity planning.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>© <span id="year"></span> Zetacron Solutions — <a href="/invoicer?utm_source=sim_footer">ZCS Invoicer</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // simple year + iframe sizing
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const frame = document.getElementById('simFrame');
+    const resize = () => frame.style.height = Math.max(1200, window.innerHeight * 0.9) + 'px';
+    window.addEventListener('resize', resize); resize();
+  </script>
+</body>
+</html>
