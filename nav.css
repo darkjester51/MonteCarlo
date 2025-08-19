@@ -1,0 +1,93 @@
+/* --- Shared Top Navigation --- */
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(15, 22, 33, 0.95);
+  padding: 10px 20px;
+  border-bottom: 1px solid #223042;
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #7dd3fc, #a78bfa);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #001018;
+  box-shadow: 0 4px 18px rgba(125, 211, 252, 0.25);
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #eaf0f6;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color: #c7d1db;
+  text-decoration: none;
+  font-size: 0.95rem;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.25s ease;
+}
+
+/* Fancy hover underline */
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #7dd3fc, #a78bfa);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #ffffff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    flex-direction: column;
+    gap: 12px;
+    background: #0f1621;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    padding: 12px;
+    border: 1px solid #223042;
+    border-radius: 8px;
+    display: none;
+  }
+
+  .topnav.active .nav-links {
+    display: flex;
+  }
+}
