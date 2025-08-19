@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Monte Carlo Cash-Flow Risk Simulator</title>
+
+<!-- Shared nav styles -->
+<link rel="stylesheet" href="nav.css">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -37,6 +41,10 @@ footer{margin-top:12px;color:var(--muted);font-size:.9rem}
 </style>
 </head>
 <body>
+
+<!-- Shared nav placeholder -->
+<div id="nav" role="navigation" aria-label="Primary"></div>
+
 <div class="container">
   <header>
     <h1>Monte Carlo Cash-Flow Risk Simulator</h1>
@@ -109,6 +117,18 @@ Cash_t = Cash_{t−1} + CashIn_t − (COGS_t + VarOpex_t + Fixed_t − Tax_t)
 </div>
 
 <script>
+/* Inject shared nav and highlight Monte Carlo link */
+fetch("nav.html")
+  .then(r => r.text())
+  .then(html => {
+    document.getElementById("nav").innerHTML = html;
+    // mark the Monte Carlo item active
+    document.querySelectorAll("#nav a.navlink").forEach(a=>{
+      const href = a.getAttribute("href") || "";
+      if (href.includes("simulator") || href.includes("MonteCarlo")) a.classList.add("active");
+    });
+  });
+
 /* ===== UI wiring ===== */
 const el = {};
 window.addEventListener('load', () => {
